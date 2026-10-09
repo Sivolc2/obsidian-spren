@@ -7,6 +7,7 @@
     "build": "esbuild src/main.js --bundle --format=cjs --platform=browser --target=es2020 --external:obsidian --loader:.json=text --outfile=main.js",
     "validate": "node test/validate.mjs"
   },
+  "engines": { "node": ">=20.11" },
   "devDependencies": { "esbuild": "^0.23.0" },
   "license": "MIT"
 }

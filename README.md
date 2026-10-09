@@ -45,6 +45,8 @@ Only the title and the first 100 characters of each note are read.
 
 ## Building
 
+Needs Node 20.11 or later.
+
 ```bash
 npm install
 npm run build      # bundles src/ into main.js
