@@ -7,10 +7,11 @@ Open the graph, run **Spren: Put organisms on the graph view**, type a search te
 ## Using it
 
 1. Open the graph view (global or local).
-2. Run the command **Spren: Put organisms on the graph view**. A panel appears at the bottom left of the graph. Run the command again to remove everything.
+2. Run the command **Spren: Put organisms on the graph view**. A panel appears at the bottom left of the graph.
 3. Type a word or phrase, choose a kind of organism, and press **Create and send out** (or Enter).
 4. Watch it, or press **Follow** to keep it in the middle of the view.
-5. When it finishes, the panel shows what it found, best fit first. **Save as a note** writes the list to a `Spren/` folder as wikilinks; **Copy as text** puts it on the clipboard; **Let it go** returns its notes to the graph.
+5. When it finishes, the panel shows what it found, best fit first. **Save as a note** writes the list to a `Spren/` folder as wikilinks; **Copy as text** puts it on the clipboard.
+6. **Remove** takes away the selected organism and returns its notes to the graph. **Close** takes the whole overlay off.
 
 A note an organism has taken stays where the graph keeps it, ringed in the organism's colour and joined to it by a line. Click a note's name in the panel to open it.
 

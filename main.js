@@ -3149,9 +3149,10 @@ _Made by the Spren overlay. ${kind}: ${TYPES2[c.type].blurb}_
   }
   fill() {
     const w = this.world, { COLOR: COLOR2 } = this.mods.draw, { TYPES: TYPES2 } = this.mods.sim, esc = (s) => String(s).replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[ch]);
-    const btn = (a, label2) => `<button data-act="${a}" style="margin:0 4px 4px 0">${label2}</button>`, c = w.creatures.find((x) => x.id === this.sel) ?? w.creatures.at(-1);
+    const tips = { release: "Take the selected organism away; the notes it holds go back to the graph", close: "Take the whole overlay off the graph" };
+    const btn = (a, label2) => `<button data-act="${a}" style="margin:0 4px 4px 0"${tips[a] ? ` title="${tips[a]}"` : ""}>${label2}</button>`, c = w.creatures.find((x) => x.id === this.sel) ?? w.creatures.at(-1);
     const top = `<div style="opacity:.6;margin-bottom:4px">tick ${w.tick.toLocaleString()} \xB7 \xD7${this.speed}</div>
-      <div>${btn("pause", this.paused ? "Run" : "Pause")}${btn("slower", "\u2212 0.5")}${btn("faster", "+ 0.5")}${c ? btn("follow", this.following ? "Stop following" : "Follow") + btn("centre", "Bring here") : ""}${btn("close", "Remove")}</div>`;
+      <div>${btn("pause", this.paused ? "Run" : "Pause")}${btn("slower", "\u2212 0.5")}${btn("faster", "+ 0.5")}${c ? btn("follow", this.following ? "Stop following" : "Follow") + btn("centre", "Bring here") : ""}${c ? btn("release", "Remove") : ""}${btn("close", "Close")}</div>`;
     if (!c) {
       setHtml(this.dyn, top + '<div style="opacity:.7;margin-top:6px">Nothing is out yet. Type what to look for above, pick a kind of organism, and send it out.</div>');
       return;
@@ -3163,13 +3164,13 @@ _Made by the Spren overlay. ${kind}: ${TYPES2[c.type].blurb}_
     const found = c.query ? this.finds(c) : null, state = (x) => x.done ? " \xB7 done" : x.state === "sleep" ? " \xB7 asleep" : x.state === "taste" ? " \xB7 tasting" : "";
     const progress = c.query && !c.done ? `<div style="opacity:.6;margin-bottom:6px">${c.body.length} of ${c.cap} \xB7 holding together ${w.coherence(c).toFixed(2)} of ${COHERE} \xB7 ${Math.max(0, TIME_OUT - (w.tick - c.born)).toLocaleString()} ticks left</div>${btn("finish", "Call it in now")}` : "";
     const done = c.done ? `<div style="margin:4px 0 6px;padding:6px 8px;border:1px solid ${COLOR2[c.type]};border-radius:6px"><b>Finished:</b> ${esc(c.done.reason)}, after ${(c.done.tick - c.born).toLocaleString()} ticks.
-        <div style="margin-top:6px">${btn("save", c.saved ? "Saved" : "Save as a note")}${btn("copy", "Copy as text")}${btn("release", "Let it go")}</div></div>` : "";
+        <div style="margin-top:6px">${btn("save", c.saved ? "Saved" : "Save as a note")}${btn("copy", "Copy as text")}</div></div>` : "";
     setHtml(this.dyn, top + `<div style="margin:6px 0">${w.creatures.map((x) => `<div data-c="${x.id}" style="cursor:pointer;padding:2px 6px;border-left:3px solid ${COLOR2[x.type]};margin:2px 0;${x.id === c.id ? "background:var(--background-modifier-hover,#333)" : ""}">
         #${x.id} ${x.query ? "\u201C" + esc(x.query.slice(0, 22)) + "\u201D" : TYPES2[x.type].name} <span style="opacity:.6">\xB7 ${TYPES2[x.type].name} \xB7 ${w.leaves(w.held(x)).length - 1} notes${state(x)}</span></div>`).join("")}</div>
       <div style="border-top:1px solid var(--background-modifier-border,#444);padding-top:6px"><b style="color:${COLOR2[c.type]}">#${c.id} ${T.name}</b><div style="opacity:.75;margin:2px 0 6px">${esc(T.blurb)}</div>
         ${done}${c.done ? "" : `<div style="margin-bottom:6px">${said}</div>`}${progress}
         ${found ? `<div style="opacity:.6">looking for \u201C${esc(c.query)}\u201D \xB7 found ${found.length}, best fit first</div>${found.slice(0, 30).map(([v, i]) => note(i)).join("") || '<div style="opacity:.6">nothing yet</div>'}` : `<div style="opacity:.6">at its core</div>${c.core.map(note).join("")}
-        <div style="opacity:.6;margin-top:6px">also holding (${c.body.length})</div>${c.body.slice(0, 14).map(note).join("") || '<div style="opacity:.6">nothing yet</div>'}`}${c.done ? "" : btn("release", "Let it go")}</div>`);
+        <div style="opacity:.6;margin-top:6px">also holding (${c.body.length})</div>${c.body.slice(0, 14).map(note).join("") || '<div style="opacity:.6">nothing yet</div>'}`}</div>`);
   }
   // The graph keeps its pan and scale in device pixels; the overlay canvas has its own backing store of
   // CSS size x pixel ratio, so the two agree. `mode` is there in case Obsidian's convention differs.
@@ -3346,7 +3347,7 @@ var SprenPlugin = class extends import_obsidian.Plugin {
     };
     this.overlay.start();
     const sec = (ms) => (ms / 1e3).toFixed(1) + " s";
-    new import_obsidian.Notice(`Spren is on ${this.overlay.pins.length} notes. Ask it something in the panel; run the command again to remove it.
+    new import_obsidian.Notice(`Spren is on ${this.overlay.pins.length} notes. Ask it something in the panel; press Close there, or run the command again, to take it off.
 Reading notes ${sec(t1 - t0)}, loading the simulation ${sec(t2 - t1)}, setting up ${sec(performance.now() - t2)}.`);
   }
   onunload() {
