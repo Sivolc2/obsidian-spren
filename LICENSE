@@ -19,12 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-The licence above covers the code in this repository. It does not cover the fly
-brain data in src/engine/fly_circuit.json, a copy of which is embedded in
-main.js. That data is derived from the FlyWire connectome and is made available
-under the Creative Commons Attribution-NonCommercial 4.0 International licence.
-See NOTICE.md.
-
