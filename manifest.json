@@ -1,0 +1,10 @@
+{
+  "id": "spren",
+  "name": "Spren",
+  "version": "0.1.0",
+  "minAppVersion": "1.4.0",
+  "description": "Idea-organisms that live on your graph view. Send one out with a search term and it gathers the notes that belong with it, then hands you the list.",
+  "author": "Sivolc2",
+  "authorUrl": "https://github.com/Sivolc2",
+  "isDesktopOnly": true
+}

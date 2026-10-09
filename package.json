@@ -1,0 +1,12 @@
+{
+  "name": "obsidian-spren",
+  "version": "0.1.0",
+  "description": "Spren: idea-organisms on the Obsidian graph view",
+  "private": true,
+  "scripts": {
+    "build": "esbuild src/main.js --bundle --format=cjs --platform=browser --target=es2020 --external:obsidian --loader:.json=text --outfile=main.js",
+    "validate": "node test/validate.mjs"
+  },
+  "devDependencies": { "esbuild": "^0.23.0" },
+  "license": "MIT"
+}

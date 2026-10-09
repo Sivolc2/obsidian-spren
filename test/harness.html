@@ -1,0 +1,24 @@
+<!doctype html><meta charset="utf-8"><title>Spren plugin harness</title><body style="margin:0;background:#1e1e1e">
+<!-- Runs the built main.js against a stand-in for Obsidian's graph view. The notes are made up (test/graph-test.json),
+     with a few hostile ones added to check that nothing a note contains can become markup. -->
+<div id="host" style="position:relative;width:100vw;height:100vh"><canvas id="graph" style="width:100%;height:100%;display:block"></canvas></div>
+<script>
+  window.module = { exports: {} };
+  window.require = name => ({ Plugin: class {}, Notice: class {}, TFile: class {}, normalizePath: p => p, sanitizeHTMLToDom: undefined });
+</script>
+<script src="../main.js"></script>
+<script type="module">
+const { Overlay, engine } = module.exports, gc = document.getElementById('graph'), dpr = devicePixelRatio || 1;
+gc.width = innerWidth * dpr; gc.height = innerHeight * dpr;
+const soup = await (await fetch('graph-test.json')).json();
+const notes = soup.ideas.map(i => ({ path: i.src + '.md', text: i.t, tags: i.tags }));
+const HOSTILE = ['<img src=x onerror="window.__xss=1"> harbor river', '"><script>window.__xss=2<\/script> harbor', "harbor ' onmouseover='window.__xss=3", 'harbor ]] [[evil|x]] --- \n# heading'];
+HOSTILE.forEach((t, k) => notes.push({ path: `${t}.md`, text: `A note about the harbor and the river. ${t}`, tags: [`"><b>tag${k}`] }));
+const renderer = { nodes: notes.map((n, k) => { const at = soup.ideas[k]?.at ?? [0.05 * (k - soup.ideas.length), 0.04]; return { id: n.path, x: at[0] * 900 + 300, y: at[1] * 900 - 120 }; }),
+  panX: gc.width / 2 - 300 * 0.45 * dpr, panY: gc.height / 2 + 120 * 0.45 * dpr, scale: 0.45 * dpr };
+const paint = () => { const g = gc.getContext('2d'); g.clearRect(0, 0, gc.width, gc.height); g.fillStyle = '#9a9a9a'; for (const n of renderer.nodes) { g.beginPath(); g.arc(n.x * renderer.scale + renderer.panX, n.y * renderer.scale + renderer.panY, 3 * dpr, 0, 7); g.fill(); } };
+renderer.changed = paint;
+const o = new Overlay(renderer, gc, notes, { sim: engine.sim, draw: engine.draw }, JSON.parse(engine.circuitText));
+window.saved = []; window.opened = []; o.onOpen = s => window.opened.push(s); o.onSave = (title, body) => window.saved.push({ title, body }); o.onClose = () => o.stop();
+Object.assign(window, { o, renderer, paint, HOSTILE }); paint(); o.start();
+</script>
